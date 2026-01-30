@@ -18,7 +18,7 @@ import StationAddDetails, {
   CompleteFuelStationAction,
 } from "./fuelStationComponents/StationAddDetails.jsx";
 
-import AddDetailsAdmin, { AdminAction } from "./adminComponents/addDetails.jsx";
+import AddDetailsAdmin, { AdminAction } from "./adminComponents/AddDetails.jsx";
 import ShowProfile from "./adminComponents/ShowProfile.jsx";
 import AdminLayout from "./adminComponents/AdminLayout.jsx";
 

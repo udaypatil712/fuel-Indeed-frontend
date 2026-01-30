@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffcc00"></stop>
+      <stop offset="100%" stop-color="#ff3300"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer drop -->
+  <path d="M128 16
+       C128 16, 40 120, 40 176
+       C40 221, 79 240, 128 240
+       C177 240, 216 221, 216 176
+       C216 120, 128 16, 128 16 Z" fill="url(#fire)"></path>
+
+  <!-- Inner flame -->
+  <path d="M128 72
+       C128 72, 88 128, 88 164
+       C88 192, 106 208, 128 208
+       C150 208, 168 192, 168 164
+       C168 128, 128 72, 128 72 Z" fill="#111"></path>
+</svg>

@@ -1,0 +1,20 @@
+<svg width="420" height="120" viewBox="0 0 420 120" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="120" rx="16" fill="#1D1D1D"></rect>
+  
+  <!-- Fuel Drop -->
+  <path d="M60 20
+           C40 50, 35 65, 35 80
+           A25 25 0 0 0 85 80
+           C85 65, 80 50, 60 20 Z" fill="#E63946"></path>
+  
+  <!-- Lightning -->
+  <polygon points="58,45 72,45 62,70 75,70 55,100 62,72 50,72" fill="#FFFFFF"></polygon>
+  
+  <!-- Text -->
+  <text x="110" y="70" font-size="34" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-weight="bold">
+    Fuel Indeed
+  </text>
+  <text x="112" y="95" font-size="14" fill="#E63946" font-family="Arial, Helvetica, sans-serif">
+    Online Fuel Booking Platform
+  </text>
+</svg>

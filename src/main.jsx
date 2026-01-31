@@ -48,11 +48,7 @@ import ProtectedRoute from "./authComponents/ProtectedRoute.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <ProtectedRoute>
-        <App />
-      </ProtectedRoute>
-    ),
+    element: <App />,
     errorElement: <ErrorPage />,
   },
 

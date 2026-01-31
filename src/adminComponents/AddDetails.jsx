@@ -33,7 +33,7 @@ export async function AdminAction({ request }) {
     );
 
     const data = await res.json();
-
+    console.log(data);
     if (!res.ok) {
       return { error: data.message || "Something went wrong" };
     }

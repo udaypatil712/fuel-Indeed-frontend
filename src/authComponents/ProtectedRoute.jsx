@@ -5,14 +5,16 @@ import axios from "axios";
 export default function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const [data, setData] = useState("");
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await axios.get(`${import.meta.env.VITE_API_URL}/auth/me`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/auth/me`, {
           withCredentials: true,
         });
-
+        setData(res.data);
+        // console.log();
         setIsAuth(true);
       } catch (err) {
         setIsAuth(false);
@@ -24,6 +26,7 @@ export default function ProtectedRoute({ children }) {
     checkAuth();
   }, []);
 
+  console.log(data);
   if (loading) return <p>Loading...</p>;
 
   if (!isAuth) {

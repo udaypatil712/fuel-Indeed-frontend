@@ -43,17 +43,26 @@ import ShowStationsDeliveryPersons from "./fuelStationComponents/ShowDeliveryPer
 import SpeedDelivery from "./userComponents/SpeedDelivery.jsx";
 import AssignToDeliveryPerson from "./fuelStationComponents/AssignToDeliveryPerson.jsx";
 import AssignSpeedDelivery from "./fuelStationComponents/AssignSpeedDelivery.jsx";
+import ProtectedRoute from "./authComponents/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <ProtectedRoute>
+        <App />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
   },
 
   {
     path: "admin",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />, // ✅ also protect admin routes
     children: [
       {
@@ -88,7 +97,11 @@ const router = createBrowserRouter([
 
   {
     path: "user",
-    element: <UserLayout />,
+    element: (
+      <ProtectedRoute>
+        <UserLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -117,7 +130,11 @@ const router = createBrowserRouter([
 
   {
     path: "fuelStation",
-    element: <FuelLayout />,
+    element: (
+      <ProtectedRoute>
+        <FuelLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -150,7 +167,11 @@ const router = createBrowserRouter([
   },
   {
     path: "deliveryPerson",
-    element: <DeliveryLayout />,
+    element: (
+      <ProtectedRoute>
+        <DeliveryLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {

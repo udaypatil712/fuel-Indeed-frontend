@@ -117,8 +117,9 @@ export default function FuelProfile() {
                   {/* IMAGE */}
                   <div className="relative overflow-hidden">
                     <img
+                      src={`${import.meta.env.VITE_API_URL}/${station.image}`}
+                      loading="lazy"
                       className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
-                      src={`${import.meta.env.VITE_API_URL}/fuelStation/image/${station._id}`}
                       alt="station"
                     />
 

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
 import {
   FaGasPump,
   FaMoneyBillWave,
@@ -20,7 +21,7 @@ export default function SpeedDelivery() {
 
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [otp, setOtp] = useState("");
+
   const [receipt, setReceipt] = useState(null);
   const [onlinePaymentLink, setOnlinePaymentLink] = useState("");
 
@@ -33,18 +34,22 @@ export default function SpeedDelivery() {
   });
 
   function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   }
 
-  // 🧮 PRICE CALCULATION
+  /* ================= PRICE ================= */
 
   async function proceedToPayment() {
     if (!form.name || !form.phone || !form.address) {
-      alert("Please fill all details");
+      alert("Fill all details");
       return;
     }
+
     if (!latitude || !longitude) {
-      alert("Location not found. Please allow location access.");
+      alert("Location access required");
       return;
     }
 
@@ -56,20 +61,18 @@ export default function SpeedDelivery() {
       },
     );
 
-    const data = await res.data;
-    console.log(data);
-    setReceipt(data);
-
+    setReceipt(res.data);
     setStep(2);
   }
 
   const rate = receipt?.fuelRate;
   const baseAmount = receipt?.fuelRate;
-  const speedCharge = receipt?.speedCharges; // 20%
+  const speedCharge = receipt?.speedCharges;
   const totalAmount = receipt?.totalAmount;
 
+  /* ================= COD ================= */
+
   async function placeOrderCOD() {
-    console.log("normal");
     await axios.post(
       `${import.meta.env.VITE_API_URL}/fuelStation/fastDelivery`,
       {
@@ -87,31 +90,11 @@ export default function SpeedDelivery() {
       },
       { withCredentials: true },
     );
-    alert("✅ Order placed with Cash on Delivery");
+
+    alert("✅ Order placed (COD)");
   }
 
-  // async function verifyOtpAndPlaceOrder() {
-  //   console.log("online");
-  //   if (otp.length < 4) return alert("Enter valid OTP");
-
-  //   await axios.post(
-  //     `${import.meta.env.VITE_API_URL}/fuelStation/fastDeliver`,
-  //     {
-  //       ...form,
-  //       latitude,
-  //       longitude,
-  //       paymentMethod: "online",
-  //       otp,
-  //       rate,
-  //       baseAmount,
-  //       speedCharge,
-  //       totalAmount,
-  //     },
-  //     { withCredentials: true },
-  //   );
-
-  //   alert("✅ Online Payment Verified & Order Placed");
-  // }
+  /* ================= QR ================= */
 
   async function showQRCode() {
     const res = await axios.post(
@@ -124,7 +107,6 @@ export default function SpeedDelivery() {
         deliveryId: receipt.deliveryId,
         latitude,
         longitude,
-        // paymentMethod: "online",
         fuelRate: rate,
         fuelType: form.fuelType,
         totalAmount,
@@ -133,70 +115,70 @@ export default function SpeedDelivery() {
     );
 
     setOnlinePaymentLink(res.data.paymentUrl);
-    console.log(res.data);
   }
 
+  /* ================= UI ================= */
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020617] to-[#020617] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-black flex items-center justify-center px-4 py-10">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative w-full max-w-xl"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
       >
-        {/* Glow */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-3xl blur opacity-30" />
+        {/* HEADER */}
+        <div className="bg-gradient-to-r from-orange-500 to-yellow-500 p-5 text-white">
+          <div className="flex items-center gap-3">
+            <FaGasPump className="text-2xl" />
 
-        {/* Card */}
-        <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-orange-100">
-              <FaGasPump className="text-2xl text-orange-500" />
-            </div>
             <div>
-              <h1 className="text-2xl font-bold">Speed Fuel Delivery</h1>
-              <p className="text-sm text-gray-500">
-                Ultra-fast doorstep fuel service
-              </p>
+              <h1 className="text-xl font-bold">Speed Delivery</h1>
+              <p className="text-xs opacity-90">Fuel at your doorstep</p>
             </div>
           </div>
 
-          {/* Progress */}
-          <div className="mb-6">
-            <div className="flex justify-between text-xs font-semibold text-gray-500 mb-2">
-              <span className={step >= 1 ? "text-orange-500" : ""}>
-                Details
-              </span>
-              <span className={step >= 2 ? "text-orange-500" : ""}>
-                Payment
-              </span>
-            </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <motion.div
-                animate={{ width: step === 1 ? "50%" : "100%" }}
-                className="h-full bg-gradient-to-r from-orange-500 to-yellow-500"
-              />
-            </div>
+          {/* STEPPER */}
+          <div className="flex justify-between mt-4 text-sm font-semibold">
+            <span className={step >= 1 ? "text-white" : "opacity-60"}>
+              Details
+            </span>
+
+            <span className={step >= 2 ? "text-white" : "opacity-60"}>
+              Payment
+            </span>
           </div>
 
-          {/* Content */}
+          <div className="h-1 bg-white/40 rounded mt-1">
+            <motion.div
+              animate={{
+                width: step === 1 ? "50%" : "100%",
+              }}
+              className="h-full bg-white rounded"
+            />
+          </div>
+        </div>
+
+        {/* BODY */}
+        <div className="p-6">
           <AnimatePresence mode="wait">
-            {/* STEP 1 */}
+            {/* ================= STEP 1 ================= */}
+
             {step === 1 && (
               <motion.div
                 key="step1"
-                initial={{ x: -50, opacity: 0 }}
+                initial={{ x: -40, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 50, opacity: 0 }}
+                exit={{ x: 40, opacity: 0 }}
                 className="space-y-4"
               >
                 <Input
                   icon={<FaUser />}
                   name="name"
-                  placeholder="Customer Name"
+                  placeholder="Full Name"
                   value={form.name}
                   onChange={handleChange}
                 />
+
                 <Input
                   icon={<FaPhone />}
                   name="phone"
@@ -204,88 +186,89 @@ export default function SpeedDelivery() {
                   value={form.phone}
                   onChange={handleChange}
                 />
+
                 <Input
                   icon={<FaMapMarkerAlt />}
                   name="address"
-                  placeholder="Full Address"
+                  placeholder="Delivery Address"
                   value={form.address}
                   onChange={handleChange}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <select
-                    className="input"
                     name="fuelType"
                     value={form.fuelType}
                     onChange={handleChange}
+                    className="input"
                   >
                     <option value="petrol">⛽ Petrol</option>
-                    <option value="diesel">🛢️ Diesel</option>
+                    <option value="diesel">🛢 Diesel</option>
                   </select>
 
                   <input
-                    className="input"
                     name="quantity"
                     type="number"
                     min="1"
                     value={form.quantity}
                     onChange={handleChange}
+                    className="input"
                   />
                 </div>
 
-                <button
-                  onClick={proceedToPayment}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition"
-                >
-                  Continue to Payment <FaArrowRight />
+                <button onClick={proceedToPayment} className="btn-primary">
+                  Continue <FaArrowRight />
                 </button>
               </motion.div>
             )}
 
-            {/* STEP 2 */}
+            {/* ================= STEP 2 ================= */}
+
             {step === 2 && (
               <motion.div
                 key="step2"
-                initial={{ x: 50, opacity: 0 }}
+                initial={{ x: 40, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -50, opacity: 0 }}
-                className="space-y-4"
+                exit={{ x: -40, opacity: 0 }}
+                className="space-y-5"
               >
-                {/* BILL SUMMARY */}
-                <div className="bg-slate-50 rounded-2xl p-4 border space-y-2">
-                  <h3 className="font-bold text-lg flex items-center gap-2">
-                    <FaReceipt /> Bill Summary
+                {/* BILL */}
+                <div className="bg-slate-50 border rounded-xl p-4 space-y-2">
+                  <h3 className="font-bold flex items-center gap-2">
+                    <FaReceipt /> Bill
                   </h3>
 
-                  <Row label="Fuel Type" value={form.fuelType} />
-                  <Row label="Rate / Litre" value={`₹ ${rate}`} />
+                  <Row label="Fuel" value={form.fuelType} />
+                  <Row label="Rate" value={`₹${rate}`} />
                   <Row label="Quantity" value={`${form.quantity} L`} />
 
                   <div className="border-t my-2" />
 
-                  <Row label="Base Amount" value={`₹ ${baseAmount}`} />
+                  <Row label="Base" value={`₹${baseAmount}`} />
+
                   <Row
-                    label="Speed Delivery Charge (20%)"
-                    value={`₹ ${speedCharge}`}
+                    label="Speed Charge"
+                    value={`₹${speedCharge}`}
                     highlight
                   />
 
                   <div className="border-t my-2" />
 
-                  <div className="flex justify-between text-lg font-bold text-green-600">
-                    <span>Total Payable</span>
+                  <div className="flex justify-between font-bold text-green-600">
+                    <span>Total</span>
                     <span>₹ {totalAmount}</span>
                   </div>
                 </div>
 
-                {/* PAYMENT METHOD */}
+                {/* PAYMENT */}
                 <div className="grid grid-cols-2 gap-4">
                   <PayCard
                     active={paymentMethod === "cod"}
                     onClick={() => setPaymentMethod("cod")}
                     icon={<FaMoneyBillWave />}
-                    text="Cash on Delivery"
+                    text="Cash"
                   />
+
                   <PayCard
                     active={paymentMethod === "online"}
                     onClick={() => {
@@ -293,68 +276,50 @@ export default function SpeedDelivery() {
                       showQRCode();
                     }}
                     icon={<FaQrcode />}
-                    text="Online Payment"
+                    text="Online"
                   />
                 </div>
 
+                {/* ACTION */}
+
                 {paymentMethod === "cod" && (
-                  <button
-                    onClick={placeOrderCOD}
-                    className="w-full py-3 rounded-xl bg-green-500 text-white font-bold"
-                  >
-                    ✅ Confirm Order (COD)
+                  <button onClick={placeOrderCOD} className="btn-success">
+                    Confirm (COD)
                   </button>
                 )}
 
                 {paymentMethod === "online" && (
-                  <div className="text-center space-y-4">
+                  <div className="text-center space-y-3">
                     <img
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${onlinePaymentLink}`}
-                      className="mx-auto rounded-xl shadow"
+                      className="mx-auto rounded-lg shadow"
                     />
 
-                    <p className="text-green-600 font-semibold">
-                      ⏳ Waiting for payment confirmation...
+                    <p className="text-green-600 text-sm">
+                      Waiting for payment...
                     </p>
                   </div>
                 )}
 
-                <button
-                  onClick={() => setStep(1)}
-                  className="w-full py-2 text-gray-500 flex items-center justify-center gap-2"
-                >
-                  <FaArrowLeft /> Back to Details
+                <button onClick={() => setStep(1)} className="btn-link">
+                  <FaArrowLeft /> Back
                 </button>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </motion.div>
-
-      <style>{`
-        .input {
-          width: 100%;
-          padding: 12px 14px;
-          border-radius: 14px;
-          border: 1px solid #e5e7eb;
-          outline: none;
-        }
-        .input:focus {
-          border-color: #f97316;
-          box-shadow: 0 0 0 2px rgba(249,115,22,0.2);
-        }
-      `}</style>
     </div>
   );
 }
 
-/* 🔹 Small Components */
+/* ================= COMPONENTS ================= */
 
 function Input({ icon, ...props }) {
   return (
-    <div className="flex items-center gap-3 border rounded-xl px-4 py-3 focus-within:border-orange-500">
-      <span className="text-gray-400">{icon}</span>
-      <input className="w-full outline-none" {...props} />
+    <div className="input-wrap">
+      <span>{icon}</span>
+      <input {...props} />
     </div>
   );
 }
@@ -363,11 +328,7 @@ function PayCard({ active, icon, text, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 font-semibold transition ${
-        active
-          ? "border-orange-500 bg-orange-50 scale-[1.02]"
-          : "border-gray-200 hover:border-orange-300"
-      }`}
+      className={`pay-card ${active ? "pay-active" : ""}`}
     >
       <div className="text-2xl text-orange-500">{icon}</div>
       <span>{text}</span>
@@ -378,7 +339,9 @@ function PayCard({ active, icon, text, onClick }) {
 function Row({ label, value, highlight }) {
   return (
     <div
-      className={`flex justify-between text-sm ${highlight ? "text-orange-600 font-semibold" : ""}`}
+      className={`flex justify-between text-sm ${
+        highlight ? "text-orange-600 font-semibold" : ""
+      }`}
     >
       <span>{label}</span>
       <span>{value}</span>

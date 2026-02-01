@@ -1,33 +1,35 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FaCheckCircle } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
-import { motion } from "framer-motion";
 
 export default function ShowFuelStations() {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchStations() {
+    async function load() {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/admin/requestedStation`,
           { withCredentials: true },
         );
+
         setStations(res.data);
-      } catch (err) {
-        console.error(err);
+      } catch {
+        alert("Failed to load stations");
       } finally {
         setLoading(false);
       }
     }
-    fetchStations();
+
+    load();
   }, []);
 
   async function rejectStation(id) {
-    if (!window.confirm("Reject this station?")) return;
+    if (!confirm("Reject station?")) return;
 
     await axios.post(
       `${import.meta.env.VITE_API_URL}/admin/reject-station/${id}`,
@@ -38,36 +40,24 @@ export default function ShowFuelStations() {
     setStations((prev) => prev.filter((s) => s._id !== id));
   }
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-60">
-        <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+  if (loading) return <Loader />;
 
-  if (stations.length === 0)
-    return (
-      <div className="bg-white/10 p-10 rounded-3xl text-center text-white shadow-xl">
-        ✅ No pending station requests
-      </div>
-    );
+  if (!stations.length) return <Empty msg="No pending station requests" />;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-      {stations.map((item, index) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+      {stations.map((item, i) => (
         <motion.div
           key={item._id}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
-          whileHover={{ scale: 1.04, y: -8 }}
-          className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-xl p-6 text-white"
+          transition={{ delay: i * 0.05 }}
+          whileHover={{ scale: 1.03 }}
+          className="card"
         >
-          <h3 className="text-xl font-bold mb-3">
-            {item.fuelStation.stationName}
-          </h3>
+          <h3 className="card-title">{item.fuelStation.stationName}</h3>
 
-          <div className="text-gray-300 text-sm space-y-1">
+          <div className="text-gray-300 space-y-1 text-sm">
             <p>
               🛢️ Petrol: <b>{item.fuelStation.petrolQty} L</b>
             </p>
@@ -76,20 +66,15 @@ export default function ShowFuelStations() {
             </p>
           </div>
 
-          <div className="flex gap-4 pt-6">
+          <div className="flex gap-3 pt-5">
             <Link
               to={`/admin/profile/payment/${item.fuelStation._id}`}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl 
-              font-semibold text-black bg-gradient-to-r from-green-400 to-emerald-500 hover:scale-105 transition"
+              className="btn-green"
             >
               <FaCheckCircle /> Approve
             </Link>
 
-            <button
-              onClick={() => rejectStation(item._id)}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl 
-              font-semibold text-white bg-gradient-to-r from-red-500 to-rose-600 hover:scale-105 transition"
-            >
+            <button onClick={() => rejectStation(item._id)} className="btn-red">
               <CiCircleRemove /> Reject
             </button>
           </div>
@@ -97,4 +82,18 @@ export default function ShowFuelStations() {
       ))}
     </div>
   );
+}
+
+/* ===== Reusable ===== */
+
+function Loader() {
+  return (
+    <div className="flex justify-center h-60 items-center">
+      <div className="spinner" />
+    </div>
+  );
+}
+
+function Empty({ msg }) {
+  return <div className="empty-box">✅ {msg}</div>;
 }

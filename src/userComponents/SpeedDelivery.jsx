@@ -15,6 +15,19 @@ import {
   FaReceipt,
 } from "react-icons/fa";
 
+function loadRazorpay() {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+
+    document.body.appendChild(script);
+  });
+}
+
 export default function SpeedDelivery() {
   const location = useLocation();
   const { latitude, longitude, custName, userId } = location.state || {};
@@ -96,25 +109,74 @@ export default function SpeedDelivery() {
 
   /* ================= QR ================= */
 
-  async function showQRCode() {
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/fuelStation/showQRCode`,
+  async function startOnlinePayment() {
+    const res = await loadRazorpay();
+
+    if (!res) {
+      alert("Razorpay SDK failed");
+      return;
+    }
+
+    // Create Order
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_API_URL}/fuelStation/create-order`,
       {
         userId,
         userName: form.name,
+
         fuelQty: form.quantity,
         stationId: receipt.stationId,
         deliveryId: receipt.deliveryId,
-        latitude,
-        longitude,
+
         fuelRate: rate,
         fuelType: form.fuelType,
         totalAmount,
+
+        latitude,
+        longitude,
       },
       { withCredentials: true },
     );
 
-    setOnlinePaymentLink(res.data.paymentUrl);
+    const options = {
+      key: data.key,
+
+      amount: data.order.amount,
+      currency: "INR",
+
+      name: "Fuel Indeed",
+
+      description: "Speed Delivery",
+
+      order_id: data.order.id,
+
+      handler: async function (response) {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/fuelStation/verify-payment`,
+          {
+            ...response,
+            bookingId: data.bookingId,
+          },
+        );
+
+        alert("✅ Payment Successful");
+
+        window.location.href = "/orders";
+      },
+
+      prefill: {
+        name: form.name,
+        contact: form.phone,
+      },
+
+      theme: {
+        color: "#f97316",
+      },
+    };
+
+    const razor = new window.Razorpay(options);
+
+    razor.open();
   }
 
   /* ================= UI ================= */
@@ -273,7 +335,7 @@ export default function SpeedDelivery() {
                     active={paymentMethod === "online"}
                     onClick={() => {
                       setPaymentMethod("online");
-                      showQRCode();
+                      startOnlinePayment();
                     }}
                     icon={<FaQrcode />}
                     text="Online"
@@ -288,7 +350,7 @@ export default function SpeedDelivery() {
                   </button>
                 )}
 
-                {paymentMethod === "online" && (
+                {/* {paymentMethod === "online" && (
                   <div className="text-center space-y-3">
                     <img
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${onlinePaymentLink}`}
@@ -299,7 +361,7 @@ export default function SpeedDelivery() {
                       Waiting for payment...
                     </p>
                   </div>
-                )}
+                )} */}
 
                 <button onClick={() => setStep(1)} className="btn-link">
                   <FaArrowLeft /> Back

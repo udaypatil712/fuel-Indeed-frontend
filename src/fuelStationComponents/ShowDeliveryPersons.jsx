@@ -77,7 +77,7 @@ export default function ShowStationsDeliveryPersons() {
             {/* 🖼 Image */}
             <div className="relative overflow-hidden">
               <img
-                src={`${import.meta.env.VITE_API_URL}/deliveryPerson/image/${person._id}`}
+                src={`${import.meta.env.VITE_API_URL}/${person.image}`}
                 alt={person.deliveryPersonName}
                 className="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
                 onError={(e) => (e.target.src = "/avatar.png")}

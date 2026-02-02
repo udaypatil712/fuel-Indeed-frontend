@@ -135,7 +135,7 @@ export default function AssignToDeliveryPerson() {
                   <div className="p-5 flex items-center gap-4">
                     <div className="relative">
                       <img
-                        src={`${import.meta.env.VITE_API_URL}/deliveryPerson/image/${person._id}`}
+                        src={`${import.meta.env.VITE_API_URL}/${person.image}`}
                         alt="delivery"
                         className="w-16 h-16 rounded-full object-cover ring-4 ring-white shadow-lg"
                         onError={(e) => {

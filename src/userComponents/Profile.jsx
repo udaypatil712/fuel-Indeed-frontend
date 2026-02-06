@@ -97,7 +97,7 @@ export default function Profile() {
 
           setStations(res.data);
         } catch (err) {
-          console.log(err);
+          //console.log(err);
         }
       },
       () => alert("Location permission denied"),

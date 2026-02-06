@@ -36,7 +36,7 @@ export default function AssignToDeliveryPerson() {
 
         setDeliveryPersons(res.data.nearbyDelivery || []);
       } catch (err) {
-        console.error(err);
+      //  console.error(err);
       } finally {
         setLoading(false);
       }

@@ -15,10 +15,13 @@ export default function FuelProfile() {
   const [loader, setLoader] = useState(true);
   const [search, setSearch] = useState("");
   const [newTab, setNewTab] = useState("stations");
+
+  // 👉 NEW: Sidebar state
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const debounceSearch = useDebounce(search, 300);
   const navigate = useNavigate();
 
-  // 🔹 Load profile
   useEffect(() => {
     async function fetchProfile() {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
@@ -30,7 +33,6 @@ export default function FuelProfile() {
     fetchProfile();
   }, []);
 
-  // 🔹 Load stations & search
   useEffect(() => {
     async function loadStations() {
       setLoader(true);
@@ -63,7 +65,6 @@ export default function FuelProfile() {
     loadStations();
   }, [debounceSearch]);
 
-  // 🔹 Approval
   async function approvalRequest(stationId) {
     try {
       await axios.post(
@@ -78,68 +79,80 @@ export default function FuelProfile() {
     }
   }
 
-  //speed Delivery Order
-
   async function orderConfirmed(stationId) {
     const res = await axios.get(
       `${import.meta.env.VITE_API_URL}/fuelStation/assignSpeedOrder/${stationId}`,
       { withCredentials: true },
     );
-    navigate("/fuelStation/profile/assignSpeedOrder", { state: res.data });
 
-    // console.log(stationId);
+    navigate("/fuelStation/profile/assignSpeedOrder", {
+      state: res.data,
+    });
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex min-h-screen bg-slate-100 overflow-hidden">
       {/* SIDEBAR */}
-      <Sidebar setNewTab={setNewTab} user={user} />
+      <Sidebar
+        user={user}
+        setNewTab={setNewTab}
+        open={sidebarOpen}
+        setOpen={setSidebarOpen}
+      />
 
-      {/* RIGHT SIDE */}
-      <div className="ml-64 flex-1 flex flex-col overflow-y-auto h-screen">
+      {/* MAIN */}
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
         {/* HEADER */}
-        <Header setSearch={setSearch} />
+        <Header setSearch={setSearch} setSidebarOpen={setSidebarOpen} />
 
         {/* CONTENT */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6 mt-20">
           {loader ? (
             <div className="flex justify-center py-20">
               <Loader />
             </div>
           ) : newTab === "stations" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 
+              lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            >
               {allStations.map((station) => (
                 <div
                   key={station._id}
-                  className="group bg-white rounded-3xl overflow-hidden 
-      border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300"
+                  className="group bg-white rounded-2xl overflow-hidden 
+                  border shadow-md hover:shadow-xl transition-all"
                 >
+                  {/* Card unchanged */}
+
                   {/* IMAGE */}
                   <div className="relative overflow-hidden">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/${station.image}`}
                       loading="lazy"
-                      className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-40 sm:h-48 md:h-52 object-cover 
+                      transition-transform duration-500 group-hover:scale-105"
                       alt="station"
                     />
 
-                    {/* TOP RIGHT ICONS */}
-                    <div className="absolute top-3 right-3 flex gap-2">
-                      {/* Spark */}
-                      {/* Speed Delivery Badge */}
+                    {/* TOP ICONS */}
+                    <div className="absolute top-2 right-2 flex gap-2">
                       <SpeedDeliveryCount
                         station={station}
                         onClick={() => orderConfirmed(station._id)}
                       />
 
-                      {/* Notification */}
-                      <div className="relative bg-white/90 backdrop-blur p-2 rounded-full shadow hover:scale-110 transition cursor-pointer">
-                        <IoMdNotifications className="text-2xl text-gray-700" />
+                      <div
+                        className="relative bg-white/90 backdrop-blur 
+                        p-1.5 rounded-full shadow pt-3"
+                      >
+                        <IoMdNotifications className="text-xl text-gray-700" />
+
                         {station.notificationsCount > 0 && (
                           <Link
                             to={`/fuelStation/profile/assignDelivery/${station._id}`}
-                            className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] 
-                font-bold w-5 h-5 flex items-center justify-center rounded-full"
+                            className="absolute -top-1 -right-1 bg-red-500 
+                            text-white text-[10px] font-bold 
+                            w-4 h-4 flex items-center justify-center rounded-full"
                           >
                             {station.notificationsCount}
                           </Link>
@@ -147,60 +160,60 @@ export default function FuelProfile() {
                       </div>
                     </div>
 
-                    {/* STATUS BADGE */}
-                    <div className="absolute top-3 left-3 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+                    {/* STATUS */}
+                    <div
+                      className="absolute top-2 left-2 bg-black/70 
+                      text-white text-xs px-2 py-0.5 rounded-full"
+                    >
                       {station.status}
                     </div>
-
-                    {/* HOVER GRADIENT */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>
                   </div>
 
                   {/* CONTENT */}
-                  <div className="p-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-semibold truncate">
+                  <div className="p-4 space-y-3 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h2 className="text-sm sm:text-base font-semibold truncate">
                         {station.stationName}
                       </h2>
 
                       <Link
                         to={`/fuelStation/profile/updateStation/${station._id}`}
-                        className="px-4 py-2 text-sm text-white rounded-lg 
-            bg-gradient-to-r from-orange-500 to-red-500 hover:shadow-lg transition"
+                        className="px-3 py-1 text-xs text-white rounded-lg 
+                        bg-gradient-to-r from-orange-500 to-red-500"
                       >
                         Update
                       </Link>
                     </div>
 
                     {/* TIME */}
-                    <div className="flex justify-between text-sm text-gray-500">
-                      <span>🕒 Opens: {station.openTime} AM</span>
-                      <span>🕕 Closes: {station.closeTime} PM</span>
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>🕒 {station.openTime}</span>
+                      <span>🕕 {station.closeTime}</span>
                     </div>
 
-                    {/* PRICE LIST */}
-                    <div className="border-t pt-3 text-sm space-y-2">
+                    {/* PRICE */}
+                    <div className="border-t pt-2 text-sm space-y-1">
                       <div className="flex justify-between">
                         <span>⛽ Petrol</span>
                         <span className="font-semibold text-green-600">
-                          ₹ {station.petrolRate}
+                          ₹{station.petrolRate}
                         </span>
                       </div>
+
                       <div className="flex justify-between">
                         <span>🛢️ Diesel</span>
                         <span className="font-semibold text-blue-600">
-                          ₹ {station.dieselRate}
+                          ₹{station.dieselRate}
                         </span>
                       </div>
                     </div>
 
-                    {/* ACTION BUTTON */}
+                    {/* ACTION */}
                     <button
                       onClick={() => approvalRequest(station._id)}
-                      className="w-full mt-3 py-3 rounded-xl 
-          bg-gradient-to-r from-green-400 to-cyan-400 
-          text-black font-semibold tracking-wide
-          hover:scale-[1.03] hover:shadow-lg transition-all duration-300"
+                      className="w-full py-2 rounded-xl text-sm
+                      bg-gradient-to-r from-green-400 to-cyan-400 
+                      text-black font-semibold hover:opacity-90"
                     >
                       Send Approval Request
                     </button>

@@ -39,7 +39,7 @@ export async function DeliveryRegisterAction({ request }) {
 
     return { success: result.message };
   } catch (err) {
-    console.error(err);
+   // console.error(err);
     return { error: "Network error. Please try again." };
   }
 }
@@ -128,7 +128,7 @@ export default function CompleteProfile() {
               </div>
               <LocationPicker
                 onSelect={(loc) => {
-                  console.log(loc);
+               //   console.log(loc);
                   setStationLocation(loc);
                 }}
               />

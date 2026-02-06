@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   /* ================= SIDEBAR ================= */
 
   const Sidebar = () => (
-    <aside className="w-64 h-screen md:w-72 bg-black/70 backdrop-blur-xl text-white flex flex-col border-r border-white/10">
+    <aside className=" w-64 h-screen md:w-72 bg-black/70 backdrop-blur-xl text-white flex flex-col border-r border-white/10">
       {/* Header */}
       <div className="p-5 text-xl font-bold border-b border-white/10 text-cyan-400">
         🛡️ Admin Panel
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
       </AnimatePresence>
 
       {/* MAIN */}
-      <main className="flex-1 pt-16 md:pt-0 p-4 md:p-8 overflow-y-auto">
+      <main className="flex-1 pt-16 md:pt-0 p-4 md:p-8 overflow-y-auto ">
         <AnimatePresence mode="wait">
           {activeTab === "stations" && (
             <motion.div

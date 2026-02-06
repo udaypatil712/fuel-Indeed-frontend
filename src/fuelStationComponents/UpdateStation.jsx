@@ -239,7 +239,7 @@ export default function UpdateStation() {
 
                 <LocationPicker
                   onSelect={(loc) => {
-                    console.log("Selected station location:", loc);
+                   // console.log("Selected station location:", loc);
                     setStationLocation(loc);
                   }}
                 />

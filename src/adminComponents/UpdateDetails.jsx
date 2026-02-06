@@ -49,7 +49,7 @@ export default function UpdateDetails() {
       //   setPetrolRate("");
       //   setDieselRate("");
     } catch (err) {
-      console.error(err);
+     // console.error(err);
       setMessage("Something went wrong");
     } finally {
       setLoading(false);

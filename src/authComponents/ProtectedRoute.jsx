@@ -26,7 +26,7 @@ export default function ProtectedRoute({ children }) {
     checkAuth();
   }, []);
 
-  console.log(data);
+//  console.log(data);
   if (loading) return <p>Loading...</p>;
 
   if (!isAuth) {

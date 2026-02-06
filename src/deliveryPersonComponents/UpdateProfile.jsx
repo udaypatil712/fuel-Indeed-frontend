@@ -46,7 +46,7 @@ export async function DeliveryUpdateAction({ request }) {
 
     return { success: result.message };
   } catch (err) {
-    console.error(err);
+   // console.error(err);
     return { error: "Network error. Please check your internet connection." };
   }
 }

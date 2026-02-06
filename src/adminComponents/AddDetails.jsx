@@ -33,7 +33,7 @@ export async function AdminAction({ request }) {
     );
 
     const data = await res.json();
-    console.log(data);
+    //console.log(data);
     if (!res.ok) {
       return { error: data.message || "Something went wrong" };
     }
@@ -54,7 +54,7 @@ export default function AddDetailsAdmin() {
         credentials: "include",
       });
       const result = await res.json();
-      console.log(result);
+     // console.log(result);
       setData(result);
     }
 

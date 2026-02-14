@@ -164,15 +164,15 @@ export default function Profile() {
               </Link>
 
               {/* THEME */}
-                {/* <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full
-      bg-gray-200 dark:bg-gray-800
-      flex items-center justify-center
-      hover:scale-105 transition"
-                >
-                  {darkMode ? <CiLight /> : <MdOutlineDarkMode />}
-                </button> */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full
+    bg-gray-200 dark:bg-gray-800
+    flex items-center justify-center
+    hover:scale-105 transition"
+              >
+                {darkMode ? <CiLight /> : <MdOutlineDarkMode />}
+              </button>
 
               {/* LOGOUT */}
               <button

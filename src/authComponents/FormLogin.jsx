@@ -1,105 +1,86 @@
-import { Form, Link, useActionData, useNavigation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Form, Link, useNavigation } from "react-router-dom";
+import { memo, useMemo } from "react";
 
-export default function FormLogin({ errorMessage }) {
-  // const actionData = useActionData();
-  const navigation = useNavigation();
-
-  const isSubmitting = navigation.state === "submitting";
-
+const Field = memo(function Field({ label, error, children }) {
   return (
-    <div className="flex items-center justify-center px-6 bg-gradient-to-br from-slate-100 via-white to-slate-100 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md rounded-2xl p-8 
-        bg-white/80 backdrop-blur-xl 
-        border border-gray-200 shadow-2xl
-        relative overflow-hidden"
-      >
-        {/* Glow */}
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-green-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-cyan-400/20 rounded-full blur-3xl"></div>
-
-        <div className="relative">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="text-gray-500 mt-1">
-            Login to your Fuel Indeed account.
-          </p>
-
-          {/* 🔴 Server Error */}
-          {errorMessage?.serverError && (
-            <p className="text-red-600 text-center mt-4">
-              {errorMessage.serverError}
-            </p>
-          )}
-
-          <Form method="post" className="mt-8 space-y-5">
-            {/* Email */}
-            <Field label="Email address">
-              <input
-                type="email"
-                name="email"
-                className="input"
-                placeholder="eg: test@gmail.com"
-                required
-              />
-              {errorMessage?.fieldErrors?.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errorMessage.fieldErrors.email}
-                </p>
-              )}
-            </Field>
-
-            {/* Password */}
-            <Field label="Password">
-              <input
-                type="password"
-                name="password"
-                className="input"
-                required
-              />
-              {errorMessage?.fieldErrors?.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errorMessage.fieldErrors.password}
-                </p>
-              )}
-            </Field>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 rounded-xl font-semibold text-black
-              bg-gradient-to-r from-green-400 to-cyan-400
-              hover:scale-[1.02] transition disabled:opacity-60"
-            >
-              {isSubmitting ? "Logging in..." : "Login"}
-            </button>
-          </Form>
-
-          <p className="text-sm text-center text-gray-600 mt-6">
-            Don’t have an account?{" "}
-            <Link
-              to="/register"
-              className="text-green-600 font-semibold hover:underline"
-            >
-              Create one
-            </Link>
-          </p>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function Field({ label, children }) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+    <div className="w-full">
+      <label className="block text-sm font-medium text-gray-300 mb-2">
         {label}
       </label>
+
       {children}
+
+      {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
     </div>
   );
-}
+});
+
+const FormLogin = memo(function FormLogin({ errorMessage }) {
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
+  const buttonText = useMemo(() => {
+    return isSubmitting ? "Logging in..." : "Login";
+  }, [isSubmitting]);
+
+  return (
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold">Welcome Back</h2>
+        <p className="text-gray-400 mt-2 text-sm">
+          Login to your Fuel Indeed account
+        </p>
+      </div>
+
+      {/* Server Error */}
+      {errorMessage?.serverError && (
+        <p className="text-red-400 text-sm mb-4 text-center">
+          {errorMessage.serverError}
+        </p>
+      )}
+
+      <Form method="post" className="space-y-6">
+        <Field label="Email Address" error={errorMessage?.fieldErrors?.email}>
+          <input
+            type="email"
+            name="email"
+            required
+            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            placeholder="Enter your email"
+          />
+        </Field>
+
+        <Field label="Password" error={errorMessage?.fieldErrors?.password}>
+          <input
+            type="password"
+            name="password"
+            required
+            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            placeholder="Enter your password"
+          />
+        </Field>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full py-3 rounded-xl font-semibold text-black bg-green-500 hover:bg-green-600 hover:scale-[1.02] transition-all duration-200 disabled:opacity-60"
+        >
+          {buttonText}
+        </button>
+      </Form>
+
+      <p className="text-sm text-gray-400 text-center mt-8">
+        Don’t have an account?{" "}
+        <Link
+          to="/register"
+          className="text-green-400 font-semibold hover:underline"
+        >
+          Create one
+        </Link>
+      </p>
+    </div>
+  );
+});
+
+export default FormLogin;

@@ -1,257 +1,209 @@
-import { Link } from "react-router-dom";
-import Orb from "./Orb";
-import { Canvas } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
 import { motion } from "framer-motion";
-
-import { FaHeart, FaWhatsapp, FaGooglePay } from "react-icons/fa6";
-
-import { MdEmail, MdSecurity, MdPayment, MdGpsFixed } from "react-icons/md";
-import AnimatedGrid from "./AnimationGrid";
-import RotatingFrame from "./AnimationGrid";
+import {
+  MdSecurity,
+  MdPayment,
+  MdLocalGasStation,
+  MdOutlineSpeed,
+} from "react-icons/md";
+import { FaWhatsapp, FaMapMarkedAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import deliveryImg from "./assets/delivery.svg";
+import trackingImg from "./assets/tracking.svg";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen text-white overflow-x-hidden bg-gradient-to-br from-[#020617] via-[#04153a] to-[#0a2a5e]">
-      {/* 🌌 GLOBAL BACKGROUND */}
-      <div className="fixed inset-0 -z-10">
-        <Canvas className="w-full h-full">
-          <Stars radius={400} depth={60} count={2000} factor={2} fade />
-        </Canvas>
-      </div>
+    <div className="min-h-screen bg-[#0B1220] text-white overflow-x-hidden">
+
+      {/* ================= NAVBAR ================= */}
+      <header className="flex justify-between items-center px-4 sm:px-6 md:px-12 lg:px-20 py-4 sm:py-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-green-500">
+          Fuel Indeed
+        </h1>
+
+        <div className="flex gap-2 sm:gap-4">
+          <Link
+            to="/login"
+            className="px-4 sm:px-5 py-2 border border-white/20 rounded-xl hover:bg-white/10 transition text-xs sm:text-sm md:text-base"
+          >
+            Login
+          </Link>
+
+          <Link
+            to="/register"
+            className="px-4 sm:px-5 py-2 bg-green-500 text-black rounded-xl font-semibold hover:bg-green-600 transition text-xs sm:text-sm md:text-base"
+          >
+            Register
+          </Link>
+        </div>
+      </header>
 
       {/* ================= HERO ================= */}
-      <section
-        className="
-  min-h-[100svh]
-  lg:min-h-screen
-  grid
-  lg:grid-cols-2
-  items-center
-  px-4 sm:px-6 md:px-12 lg:px-24
-  gap-10
-"
-      >
-        {/* LEFT TEXT */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left"
-        >
-          <h1 className="font-bold mb-6 text-4xl sm:text-5xl xl:text-6xl">
-            <span className="text-green-400">Fuel</span> Indeed
-          </h1>
+      <section className="min-h-[85vh] flex items-center px-4 sm:px-6 md:px-12 lg:px-20 py-10">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
 
-          <p className="text-gray-300 mb-8 text-base sm:text-lg">
-            India’s Smart Fuel Booking & Delivery Platform with Real-Time
-            Tracking, Secure Payments & Live Notifications.
-          </p>
-
-          {/* TAGS */}
-          <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-8">
-            {[
-              "Live Location",
-              "Google Maps",
-              "WhatsApp Alerts",
-              "Razorpay",
-              "Email OTP",
-              "Instant Delivery",
-            ].map((tag, i) => (
-              <span
-                key={i}
-                className="px-3 sm:px-4 py-1 bg-white/10 rounded-full text-xs sm:text-sm border border-white/10"
-              >
-                {tag}
+          {/* LEFT TEXT */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center lg:text-left"
+          >
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              Smart Fuel Delivery
+              <span className="text-green-500 block">
+                At Your Location
               </span>
-            ))}
+            </h1>
+
+            <p className="text-gray-400 text-sm sm:text-base md:text-lg mb-8 max-w-xl mx-auto lg:mx-0">
+              Fuel Indeed delivers petrol and diesel directly to your vehicle.
+              Track in real-time, pay securely, and enjoy safe fuel service
+              wherever you are.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Link
+                to="/register"
+                className="bg-green-500 hover:bg-green-600 text-black font-semibold px-8 py-3 rounded-xl transition"
+              >
+                Get Started
+              </Link>
+
+              <Link
+                to="/login"
+                className="border border-white/20 px-8 py-3 rounded-xl hover:bg-white/10 transition"
+              >
+                Login
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* RIGHT IMAGE */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="flex justify-center order-first lg:order-last"
+          >
+            <img
+              src={deliveryImg}
+              alt="Fuel Delivery Illustration"
+              className="w-full max-w-xs sm:max-w-sm md:max-w-md"
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ================= ABOUT ================= */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-12 lg:px-20 bg-[#111827]">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+          <div className="order-last lg:order-first">
+            <img
+              src={trackingImg}
+              alt="Live Tracking"
+              className="w-full max-w-xs sm:max-w-sm mx-auto"
+            />
           </div>
 
-          {/* BUTTONS */}
-          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-            <Link
-              to="/register"
-              className="px-6 sm:px-8 py-3 bg-green-500 text-black rounded-xl font-semibold hover:scale-105 transition"
-            >
-              Start Booking
-            </Link>
+          <div className="text-center lg:text-left">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
+              Track Fuel Delivery
+              <span className="text-green-500"> Live</span>
+            </h2>
 
-            <Link
-              to="/login"
-              className="px-6 sm:px-8 py-3 border border-white/20 rounded-xl hover:bg-white/10 transition"
-            >
-              Login
-            </Link>
+            <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+              Track your delivery partner like ride-hailing apps. Get ETA,
+              notifications, and OTP confirmation for secure delivery.
+            </p>
           </div>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* RIGHT ORB */}
-        {/* RIGHT ORB */}
-        <div
-          className="
-    relative
-    w-full
-    flex
-    items-center
-    justify-center
+      {/* ================= HOW IT WORKS ================= */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-12 lg:px-20">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16">
+          How It <span className="text-green-500">Works</span>
+        </h2>
 
-    h-[300px]
-    sm:h-[360px]
-    md:h-[440px]
-    lg:h-[580px]
-    xl:h-[680px]
-
-    overflow-hidden
-  "
-        >
-          <Orb />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-center">
+          {[
+            "Register & Verify",
+            "Enter Location",
+            "Pay Securely",
+            "Track & Receive",
+          ].map((step, index) => (
+            <div
+              key={index}
+              className="p-5 sm:p-6 bg-white/5 rounded-2xl border border-white/10 hover:scale-105 transition"
+            >
+              <div className="text-2xl sm:text-3xl text-green-500 font-bold mb-3">
+                {index + 1}
+              </div>
+              <p className="text-gray-300 text-sm sm:text-base">
+                {step}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ================= FEATURES ================= */}
-      <section className="py-20 sm:py-24 px-4 sm:px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl xl:text-5xl font-bold text-center mb-16">
-          Powerful Platform <span className="text-green-400">Features</span>
+      <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-12 lg:px-20 bg-[#111827]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16">
+          Platform <span className="text-green-500">Features</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          <Feature
-            icon={<MdGpsFixed />}
-            title="Live GPS Tracking"
-            desc="Track delivery partner in real-time using Google Maps."
-          />
-
-          <Feature
-            icon={<FaWhatsapp />}
-            title="WhatsApp Alerts"
-            desc="Instant updates via WhatsApp."
-          />
-
-          <Feature
-            icon={<MdEmail />}
-            title="Email Verification"
-            desc="OTP based verification system."
-          />
-
-          <Feature
-            icon={<MdPayment />}
-            title="Razorpay Payments"
-            desc="Secure online payment gateway."
-          />
-
-          <Feature
-            icon={<MdSecurity />}
-            title="OTP Delivery"
-            desc="Delivery only after OTP match."
-          />
-
-          <Feature
-            icon={<FaGooglePay />}
-            title="UPI & Cards"
-            desc="Multiple payment methods supported."
-          />
+          {[
+            { icon: <FaMapMarkedAlt />, title: "Live GPS Tracking" },
+            { icon: <MdPayment />, title: "Secure Payments" },
+            { icon: <MdSecurity />, title: "OTP Verification" },
+            { icon: <FaWhatsapp />, title: "WhatsApp Alerts" },
+            { icon: <MdLocalGasStation />, title: "Doorstep Delivery" },
+            { icon: <MdOutlineSpeed />, title: "Fast Service" },
+          ].map((feature, i) => (
+            <div
+              key={i}
+              className="p-5 sm:p-6 bg-white/5 rounded-2xl border border-white/10 hover:scale-105 transition text-center"
+            >
+              <div className="text-2xl sm:text-3xl text-green-500 mb-4">
+                {feature.icon}
+              </div>
+              <h3 className="text-base sm:text-lg font-bold">
+                {feature.title}
+              </h3>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section className="relative min-h-[75vh] flex items-center justify-center text-center px-6 overflow-hidden">
-        {/* Top Left Frame */}
-        <div className="absolute top-6 left-6 sm:top-12 sm:left-12 lg:top-16 lg:left-24 opacity-20">
-          <RotatingFrame />
-        </div>
+      {/* ================= CTA ================= */}
+      <section className="py-16 sm:py-24 text-center px-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
+          Never Run Out of Fuel Again
+        </h2>
 
-        {/* Top Right Frame */}
-        <div className="absolute top-6 right-6 sm:top-12 sm:right-12 lg:top-16 lg:right-24 opacity-20">
-          <RotatingFrame />
-        </div>
-
-        {/* CTA Content */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="relative z-10 max-w-xl"
+        <Link
+          to="/register"
+          className="bg-green-500 text-black px-8 sm:px-10 py-3 sm:py-4 rounded-xl font-semibold hover:bg-green-600 transition"
         >
-          <h2 className="text-3xl sm:text-4xl xl:text-5xl font-bold mb-6">
-            Book Fuel in <span className="text-green-400">Seconds</span>
-          </h2>
-
-          <p className="text-gray-400 mb-8">
-            Safe, fast and verified fuel delivery.
-          </p>
-
-          <Link
-            to="/register"
-            className="px-8 sm:px-10 py-4 bg-green-500 text-black rounded-xl font-semibold"
-          >
-            Get Started Now
-          </Link>
-        </motion.div>
+          Create Free Account
+        </Link>
       </section>
 
       {/* ================= FOOTER ================= */}
-      <footer className="border-t border-white/10 bg-black/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-10 text-center md:text-left">
-            <div>
-              <h4 className="text-xl font-bold mb-3">Fuel Indeed</h4>
-              <p className="text-gray-400">Smart fuel delivery system.</p>
-            </div>
-
-            <div>
-              <h4 className="text-xl font-bold mb-3">Quick Links</h4>
-
-              <ul className="space-y-2">
-                <li>
-                  <Link to="/register">Register</Link>
-                </li>
-                <li>
-                  <Link to="/login">Login</Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-xl font-bold mb-3">Developer</h4>
-              <p className="text-gray-400">Built with ❤️ by Uday Patil</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-3">
-            <p>© {new Date().getFullYear()} Fuel Indeed</p>
-
-            <p className="flex items-center gap-2">
-              Made with <FaHeart className="text-red-500" /> in India
-            </p>
-          </div>
-        </div>
+      <footer className="bg-[#111827] border-t border-white/10 py-8 sm:py-10 text-center text-gray-400 px-4">
+        <p className="text-base sm:text-lg font-semibold text-white mb-2">
+          Fuel Indeed
+        </p>
+        <p className="text-sm sm:text-base">
+          India’s Smart Fuel Delivery Platform
+        </p>
+        <p className="mt-4 text-xs sm:text-sm">
+          © {new Date().getFullYear()} Fuel Indeed. All rights reserved.
+        </p>
       </footer>
     </div>
-  );
-}
-
-/* ================= FEATURE CARD ================= */
-
-function Feature({ icon, title, desc }) {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      className="
-        p-6
-        rounded-2xl
-        bg-white/5
-        border
-        border-white/10
-        backdrop-blur
-        h-full
-        text-center sm:text-left
-      "
-    >
-      <div className="text-4xl text-green-400 mb-4">{icon}</div>
-
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-
-      <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
-    </motion.div>
   );
 }

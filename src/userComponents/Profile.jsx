@@ -19,9 +19,16 @@ export default function Profile() {
   const [search, setSearch] = useState("");
   const debounceSearch = useDebounce(search, 300);
 
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark",
-  );
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+
+    // Optional: detect system preference
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
@@ -29,13 +36,15 @@ export default function Profile() {
   /* ================= THEME ================= */
 
   useEffect(() => {
+    const root = document.documentElement;
+
     if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      root.classList.add("dark");
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      root.classList.remove("dark");
     }
+
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   /* ================= LOGOUT ================= */
@@ -155,15 +164,15 @@ export default function Profile() {
               </Link>
 
               {/* THEME */}
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full
-    bg-gray-200 dark:bg-gray-800
-    flex items-center justify-center
-    hover:scale-105 transition"
-              >
-                {darkMode ? <CiLight /> : <MdOutlineDarkMode />}
-              </button>
+                {/* <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full
+      bg-gray-200 dark:bg-gray-800
+      flex items-center justify-center
+      hover:scale-105 transition"
+                >
+                  {darkMode ? <CiLight /> : <MdOutlineDarkMode />}
+                </button> */}
 
               {/* LOGOUT */}
               <button

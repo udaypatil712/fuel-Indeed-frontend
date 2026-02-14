@@ -1,36 +1,37 @@
 import { Sphere, Ring } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, memo } from "react";
 
-export default function FuelCircle() {
-  const core = useRef();
-  const r1 = useRef();
-  const r2 = useRef();
-  const r3 = useRef();
+function FuelCircle() {
+  const core = useRef(null);
+  const r1 = useRef(null);
+  const r2 = useRef(null);
+  const r3 = useRef(null);
 
   const { viewport } = useThree();
 
-  // ✅ Use world units (real 3D size)
+  // ✅ Only depend on width
   const scale = useMemo(() => {
     const w = viewport.width;
 
-    if (w < 4) return 0.85; // Small phone
-    if (w < 6) return 1.0; // Medium phone
-    if (w < 8) return 1.15; // Tablet
-    return 1.3; // Desktop
-  }, [viewport]);
+    if (w < 4) return 0.85;
+    if (w < 6) return 1.0;
+    if (w < 8) return 1.15;
+    return 1.3;
+  }, [viewport.width]);
 
+  // ✅ Animation (UNCHANGED)
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-
     if (!core.current) return;
+
+    const t = state.clock.getElapsedTime();
 
     core.current.rotation.y = t * 0.3;
     core.current.position.y = Math.sin(t) * 0.15;
 
-    r1.current.rotation.z = t * 0.5;
-    r2.current.rotation.x = t * 0.4;
-    r3.current.rotation.y = t * 0.3;
+    if (r1.current) r1.current.rotation.z = t * 0.5;
+    if (r2.current) r2.current.rotation.x = t * 0.4;
+    if (r3.current) r3.current.rotation.y = t * 0.3;
   });
 
   return (
@@ -58,3 +59,5 @@ export default function FuelCircle() {
     </group>
   );
 }
+
+export default memo(FuelCircle);

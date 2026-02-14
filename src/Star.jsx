@@ -1,17 +1,31 @@
 import { Stars } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
-import { useMemo } from "react";
+import { useThree, useFrame } from "@react-three/fiber";
+import { useMemo, useRef, memo } from "react";
 
-export default function StarBackground() {
+function StarBackground() {
   const { size } = useThree();
+  const starRef = useRef();
 
   const count = useMemo(() => {
-    if (size.width < 480) return 1000;
-    if (size.width < 768) return 2400;
-    return 2500;
-  }, [size]);
+    const w = size.width;
+
+    if (w < 480) return 800;
+    if (w < 768) return 1500;
+    return 2000;
+  }, [size.width]);
+
+  // 🔥 THIS makes it rotate infinitely
+  useFrame((state, delta) => {
+    if (starRef.current) {
+      starRef.current.rotation.y += delta * 0.05; // smooth slow rotation
+    }
+  });
 
   return (
-    <Stars radius={40} depth={40} count={count} factor={3} fade speed={0.8} />
+    <group ref={starRef}>
+      <Stars radius={100} depth={50} count={count} factor={4} fade />
+    </group>
   );
 }
+
+export default memo(StarBackground);

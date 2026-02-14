@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Dark mode variant */
-@custom-variant dark (&:where(.dark, .dark *));
+/* @custom-variant dark (&:where(.dark, .dark *)); */
 
 /* Custom input style */
 .input {
@@ -92,9 +92,9 @@
   @apply w-full outline-none;
 }
 
-.input {
+/* .input {
   @apply w-full px-3 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-orange-400;
-}
+} */
 
 .btn-primary {
   @apply w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500

@@ -66,6 +66,7 @@ export default function Profile() {
       });
 
       const result = await res.json();
+
       setData(result);
     }
 
@@ -73,13 +74,13 @@ export default function Profile() {
   }, []);
 
   /* ================= LOCATION + STATIONS ================= */
-
+  // user current location
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-
+        console.log(lat, "  ", lng);
         setLatitude(lat);
         setLongitude(lng);
 
@@ -103,7 +104,7 @@ export default function Profile() {
               },
             );
           }
-
+          console.log(res.data);
           setStations(res.data);
         } catch (err) {
           //console.log(err);
@@ -112,6 +113,17 @@ export default function Profile() {
       () => alert("Location permission denied"),
     );
   }, [debounceSearch]);
+
+  function openInMap(stationLocation) {
+    console.log(stationLocation.coordinates);
+    const [stationLat, stationLng] = stationLocation.coordinates;
+    let userLat = latitude;
+    let userLng = longitude;
+    
+    const googleMapUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${stationLng},${stationLat}&travelmode=driving`;
+
+    window.open(googleMapUrl, "_blank");
+  }
 
   /* ================= UI ================= */
 
@@ -263,13 +275,30 @@ export default function Profile() {
                 </div>
 
                 {/* BUTTON */}
-                <Link
-                  to={`/user/profile/bookingFuel/${station._id}`}
-                  className="block w-full text-center py-2 rounded-lg
-                  bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-                >
-                  Book Fuel
-                </Link>
+                <div className="flex gap-3 w-full mt-3">
+                  <Link
+                    to={`/user/profile/bookingFuel/${station._id}`}
+                    className="flex-1 text-center py-2.5 rounded-lg
+                  bg-orange-500 hover:bg-orange-600
+                  text-white font-semibold
+                  transition duration-300 ease-in-out
+                  shadow-md hover:shadow-lg"
+                  >
+                    Book Fuel
+                  </Link>
+
+                  <button
+                    onClick={() => openInMap(station.location)}
+                    className="flex-1 py-2.5 rounded-lg
+                    bg-gradient-to-r from-blue-500 to-indigo-600
+                    hover:from-blue-600 hover:to-indigo-700
+                    text-white font-semibold
+                    transition duration-300 ease-in-out
+                    shadow-md hover:shadow-lg"
+                  >
+                    Open In Map
+                  </button>
+                </div>
               </div>
             </div>
           ))}
